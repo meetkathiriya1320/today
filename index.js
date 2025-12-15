@@ -5,46 +5,42 @@ import app from './app.js';
 import { verifyToken } from './src/helper/jwt.js';
 import db from './src/models/index.js';
 import { adminSentNotification, onboardNotification, sendRequestBybusiness } from './src/socket/onboardNotification.js';
+
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
-const mode = process.env.NODE_MODE
+const mode = process.env.NODE_MODE || "development";
 
-let server;
-const is_dev = mode === "development"
-if (is_dev) {
-    server = http.createServer(app)
-}
+// ✅ ALWAYS create server
+const server = http.createServer(app);
 
+// Socket.IO init
 const io = new Server(server, {
     cors: {
-        origin: '*', // or specific frontend URL
+        origin: '*',
         methods: ['GET', 'POST']
     }
 });
 
-// io.use(async (socket, next) => {
-//     try {
-//         const token = socket.handshake.headers?.token;   // preferred
+// 🔐 Socket auth (optional – uncomment when needed)
+/*
+io.use(async (socket, next) => {
+    try {
+        const token = socket.handshake.headers?.token;
+        if (!token) {
+            return next(new Error("Authentication token missing"));
+        }
 
-//         // if (!token) {
-//         //     return next(new Error("Authentication token missing"));
-//         // }
+        const decoded = verifyToken(token);
+        socket.user = decoded;
 
-//         // Verify JWT
-//         const decoded = verifyToken(token)
-
-//         // Attach user data to socket
-//         socket.user = decoded;
-
-//         next(); // allow connection
-
-//     } catch (err) {
-//         console.log("❌ Socket auth error:", err.message);
-//         next(new Error("Unauthorized"));
-//     }
-// });
-
+        next();
+    } catch (err) {
+        console.log("❌ Socket auth error:", err.message);
+        next(new Error("Unauthorized"));
+    }
+});
+*/
 
 io.on('connection', (socket) => {
     console.log('🟢 A user connected:', socket.id);
@@ -54,15 +50,15 @@ io.on('connection', (socket) => {
             const updated_data = await adminSentNotification(data, socket.user);
             io.emit('receive-user-notification', updated_data);
         } catch (error) {
-            io.emit('error', error.message);
+            socket.emit('error', error.message);
         }
     });
 
-    // When client disconnects
     socket.on('disconnect', () => {
         console.log('🔴 A user disconnected:', socket.id);
     });
 });
 
-
-server.listen(PORT, () => console.log(`Server running on port ${PORT} 🚀`));
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT} 🚀 (${mode})`);
+});

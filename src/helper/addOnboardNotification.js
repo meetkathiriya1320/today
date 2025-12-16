@@ -24,10 +24,10 @@ const addOnboardNotification = async ({ data, transaction }) => {
             send_by: data.id // user themselves or admin who registered
         }, { transaction });
 
-        await db.NotificationRole.create({
-            notification_id: notification.id,
-            role_id: role_id.id
-        }, { transaction });
+        // await db.NotificationRole.create({
+        //     notification_id: notification.id,
+        //     role_id: role_id.id
+        // }, { transaction });
 
         const findAdmins = await db.User.findAll({
             include: [
@@ -50,6 +50,7 @@ const addOnboardNotification = async ({ data, transaction }) => {
         const notificationUsers = adminIds.map(adminId => ({
             notification_id: notification.id,
             user_id: adminId,
+            role_id: role_id.id,
             is_read: false
         }));
 

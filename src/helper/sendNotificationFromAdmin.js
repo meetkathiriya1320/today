@@ -12,7 +12,7 @@ const sendNotificationFromAdmin = async ({ data, transaction }) => {
         }, { transaction });
 
 
-        await db.NotificationUser.create({ notification_id: notification.id, user_id: data.business_id, is_read: false, redirect_url: data?.redirect_url || null }, { transaction });
+        await db.NotificationUser.create({ notification_id: notification.id, role_id: data.role_id, user_id: data.business_id, is_read: false, redirect_url: data?.redirect_url || null }, { transaction });
 
         return { notification_id: notification.id }
 

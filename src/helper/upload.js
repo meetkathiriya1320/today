@@ -18,7 +18,10 @@ const storage = multer.diskStorage({
         // Generate unique filename with timestamp
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const extension = path.extname(file.originalname);
-        const basename = path.basename(file.originalname, extension);
+        const basename = path.basename(file.originalname, extension)
+            .replace(/[^a-zA-Z0-9]/g, '_') // Replace special characters and spaces with underscore
+            .replace(/_{2,}/g, '_') // Replace multiple underscores with single underscore
+            .replace(/^_+|_+$/g, ''); // Remove leading and trailing underscores
         cb(null, basename + '-' + uniqueSuffix + extension);
     }
 });

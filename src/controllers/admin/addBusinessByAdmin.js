@@ -113,6 +113,7 @@ const addBusinessByAdmin = async (req, res) => {
             id: req.user?.userId,
             message: `Your ${business_name} has been successfully onboarded by the admin.`,
             business_id: user.id,
+            role_id: businessOwnerRole.id
         }
 
         await sendNotificationFromAdmin({

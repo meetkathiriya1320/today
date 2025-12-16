@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
+import { getImageUrl } from '../helper/urlHelper.js';
 
 const Category = sequelize.define('Category', {
     name: {
@@ -10,7 +11,7 @@ const Category = sequelize.define('Category', {
         type: DataTypes.STRING,
         allowNull: true,
         get() {
-            return process.env.APP_PROJECT_PATH + this.getDataValue('image');
+            return getImageUrl(this.getDataValue('image'));
         }
     },
     created_by: {

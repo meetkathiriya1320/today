@@ -1,14 +1,6 @@
 import db from '../../models/index.js';
 import { RESPONSE } from '../../helper/response.js';
 
-// Helper function to append base URL to image
-const appendBaseUrl = (obj) => {
-    if (obj.image) {
-        obj.image = `${process.env.APP_PROJECT_PATH}${obj.image}`;
-    }
-    return obj;
-};
-
 // Update Category
 const updateCategory = async (req, res) => {
     try {
@@ -28,7 +20,8 @@ const updateCategory = async (req, res) => {
             updated_by: req.user.userId
         });
 
-        const updatedCategory = appendBaseUrl(category.toJSON());
+        // Model getters already handle image URL construction
+        const updatedCategory = category.toJSON();
 
         return RESPONSE.success(res, 1013, updatedCategory);
     } catch (error) {

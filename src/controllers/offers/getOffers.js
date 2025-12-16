@@ -1,16 +1,7 @@
 import db from '../../models/index.js';
 const { Op } = db.Sequelize;
 import { RESPONSE } from '../../helper/response.js';
-
-// Helper function to append base URL to image
-const appendBaseUrl = (obj) => {
-    if (obj && obj.OfferImage) {
-        if (obj.OfferImage.image) {
-            obj.OfferImage.image = `${process.env.APP_PROJECT_PATH}${obj.OfferImage.image}`;
-        }
-    }
-    return obj;
-};
+import { appendBaseUrlToOfferImages } from '../../helper/urlHelper.js';
 
 // Get All Offers with filtering and search
 const getOffers = async (req, res) => {

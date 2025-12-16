@@ -2,17 +2,6 @@ import db from '../../models/index.js';
 import { RESPONSE } from '../../helper/response.js';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Helper function to append base URL to image
-const appendBaseUrl = (obj) => {
-    if (obj && obj.OfferImage) {
-        if (obj.OfferImage.image) {
-            obj.OfferImage.image = `${process.env.APP_PROJECT_PATH}${obj.OfferImage.image}`;
-        }
-    }
-    return obj;
-};
 
 // Helper function to delete old image file from filesystem
 const deleteOldImageFile = (imagePath) => {
@@ -165,8 +154,8 @@ const updateOffer = async (req, res) => {
             ]
         });
 
-        // Apply base URL to images
-        const offerWithFullUrl = appendBaseUrl(updatedOffer.toJSON());
+        // Model getters already handle image URL construction
+        const offerWithFullUrl = updatedOffer.toJSON();
 
         return RESPONSE.success(res, 1037, offerWithFullUrl);
     } catch (error) {

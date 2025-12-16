@@ -29,38 +29,33 @@ const createNotification = async (req, res) => {
             });
 
             // Create notification roles
-            const notificationRoles = roleRecords.map(role => ({
-                notification_id: notification.id,
-                role_id: role.id
-            }));
-            await db.NotificationRole.bulkCreate(notificationRoles, { transaction });
+            const notificationRoles = roleRecords.map(role => role.id);
+            // await db.NotificationRole.bulkCreate(notificationRoles, { transaction });
 
             // Find users with these roles
-            const users = await db.User.findAll({
-                include: [{
-                    model: db.Role,
-                    where: {
-                        name: {
-                            [Op.in]: roles
-                        }
+            const users = await db.UserRole.findAll({
+                where: {
+                    role_id: {
+                        [Op.in]: notificationRoles
                     },
-                    through: { attributes: [] },
-                    attributes: []
-                }],
+                    is_verify: true,
+                    is_blocked: false
+                },
                 transaction
             });
 
             // Create notification users
             const notificationUsers = users.map(user => ({
                 notification_id: notification.id,
-                user_id: user.id,
+                user_id: user.user_id,
+                role_id: user.role_id,
                 is_read: false
-            }));
+            }))
+
+
             await db.NotificationUser.bulkCreate(notificationUsers, { transaction });
 
             await transaction.commit();
-
-
 
             const notifications = await getCurrentNotification(notification.id, roles);
 

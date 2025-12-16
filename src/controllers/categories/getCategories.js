@@ -50,7 +50,7 @@ const getCategories = async (req, res) => {
                         {
                             model: db.Branches,
                             where: {
-                                 city: {
+                                city: {
                                     [Op.iLike]: city
                                 }
                             },
@@ -61,7 +61,7 @@ const getCategories = async (req, res) => {
                 }
             ],
         });
-
+        console.log(cityWiseCat)
         const cityWiseCatCountWise = cityWiseCat.map(cat => {
             const json = cat.toJSON();
             json.offer_count = json.Offers.length;

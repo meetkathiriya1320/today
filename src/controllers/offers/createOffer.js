@@ -3,7 +3,6 @@ import { RESPONSE } from '../../helper/response.js';
 import sendRequestNotification from '../../helper/sendRequestNotification.js';
 import { getCurrentNotification } from '../notification/createNotification.js';
 import sendNotificationFromAdmin from '../../helper/sendNotificationFromAdmin.js';
-import { appendBaseUrl } from '../images/serveImage.js';
 
 // Create Offer
 const createOffer = async (req, res) => {
@@ -94,11 +93,12 @@ const createOffer = async (req, res) => {
             ]
         });
 
-        // Apply base URL to images using the new utility function
-        const offerWithFullUrl = appendBaseUrl(offerWithImages.toJSON());
+        // Model getters already handle image URL construction
+        const offerWithFullUrl = offerWithImages.toJSON();
 
         return RESPONSE.success(res, 1034, { ...offerWithFullUrl, notifications }, 201);
     } catch (error) {
+
         await transaction.rollback();
         return RESPONSE.error(res, 2999, 500, error);
     }
@@ -169,10 +169,16 @@ const createOffer_admin = async (req, res) => {
             }, { transaction });
         }
 
+        const businessOwnerRole = await db.Role.findOne({
+            where: { name: 'business_owner' },
+            transaction
+        });
+
         const promotion_data = {
             id: req.user?.userId,
             message: `Your ${offer_title} Offer created by admin`,
             business_id: user_id,
+            role_id: businessOwnerRole?.id,
             redirect_url: "/offers"
         }
 
@@ -197,8 +203,8 @@ const createOffer_admin = async (req, res) => {
             ]
         });
 
-        // Apply base URL to images using the new utility function
-        const offerWithFullUrl = appendBaseUrl(offerWithImages.toJSON());
+        // Model getters already handle image URL construction
+        const offerWithFullUrl = offerWithImages.toJSON();
 
         return RESPONSE.success(res, 1034, { ...offerWithFullUrl, notifications }, 201);
     } catch (error) {

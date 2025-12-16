@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
+import { getImageUrl } from '../helper/urlHelper.js';
 
 const BusinessImage = sequelize.define('BusinessImage', {
     business_id: {
@@ -10,7 +11,7 @@ const BusinessImage = sequelize.define('BusinessImage', {
         type: DataTypes.STRING,
         allowNull: false,
         get() {
-            return process.env.APP_PROJECT_PATH + this.getDataValue('image_url');
+            return getImageUrl(this.getDataValue('image_url'));
         }
     }
 }, {

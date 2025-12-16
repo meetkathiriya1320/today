@@ -2,16 +2,6 @@ import db from '../../models/index.js';
 const { Op } = db.Sequelize;
 import { RESPONSE } from '../../helper/response.js';
 
-// Helper function to append base URL to image
-const appendBaseUrl = (obj) => {
-    if (obj && obj.OfferImage) {
-        if (obj.OfferImage.image) {
-            obj.OfferImage.image = `${process.env.APP_PROJECT_PATH}${obj.OfferImage.image}`;
-        }
-    }
-    return obj;
-};
-
 // Get All User Requests (Offers) for the authenticated user
 const getUserOffers = async (req, res) => {
     try {
@@ -122,7 +112,8 @@ const getUserOffers = async (req, res) => {
             if (offerJson.OfferRequestRejectDetails && Array.isArray(offerJson.OfferRequestRejectDetails)) {
                 offerJson.OfferRequestRejectDetails = offerJson.OfferRequestRejectDetails[0] || null;
             }
-            return appendBaseUrl(offerJson);
+            // Model getters already handle image URL construction
+            return offerJson;
         });
 
         return RESPONSE.success(res, 1035, {

@@ -7,14 +7,6 @@ import sendNotificationFromAdmin from '../../helper/sendNotificationFromAdmin.js
 import { formatDate } from '../../utils/formatDate.js';
 const { Op } = db.Sequelize;
 
-// Helper function to append base URL to image
-const appendBaseUrl = (obj) => {
-    if (obj.image) {
-        obj.image = `${process.env.APP_PROJECT_PATH}${obj.image}`;
-    }
-    return obj;
-};
-
 // Create Advertise Request
 const createAdvertiseRequest = async (req, res) => {
     const transaction = await db.sequelize.transaction();
@@ -306,11 +298,17 @@ const createAdvertiseRequest_admin = async (req, res) => {
             }, { transaction });
         }
 
+        const businessOwnerRole = await db.Role.findOne({
+            where: { name: 'business_owner' },
+            transaction
+        });
+
         const promotion_data = {
             id: req.user?.userId,
             message: `A promotion has been created by the admin from ${formatDate(start_date)} to ${formatDate(end_date)}.`,
             business_id: user_id,
-            redirect_url: "/promotions"
+            redirect_url: "/promotions",
+            role_id: businessOwnerRole.id
 
         }
         const { notification_id } = await sendNotificationFromAdmin({

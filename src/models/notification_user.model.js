@@ -18,6 +18,14 @@ const NotificationUser = sequelize.define('NotificationUser', {
             key: 'id'
         }
     },
+    role_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'roles',
+            key: 'id'
+        }
+    },
     is_read: {
         type: DataTypes.BOOLEAN,
         defaultValue: false

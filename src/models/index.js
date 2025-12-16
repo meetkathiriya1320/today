@@ -24,7 +24,7 @@ import Settings from './settings.model.js';
 import UserBlockHistory from './userBlockHistory.model.js';
 import Role from './role.model.js';
 import UserRole from './user_role.model.js';
-import NotificationRole from './notification_role.model.js';
+// import NotificationRole from './notification_role.model.js';
 import NotificationUser from './notification_user.model.js';
 
 const db = {};
@@ -55,7 +55,7 @@ db.Setting = Settings;
 db.UserBlockHistory = UserBlockHistory;
 db.Role = Role;
 db.UserRole = UserRole;
-db.NotificationRole = NotificationRole;
+// db.NotificationRole = NotificationRole;
 db.NotificationUser = NotificationUser;
 
 
@@ -82,16 +82,13 @@ db.Business.hasMany(db.BusinessImage, { as: "business_images", foreignKey: 'busi
 
 // Notification associations
 db.Notification.belongsTo(db.User, { foreignKey: 'send_by', as: 'sender' });
-db.Notification.hasMany(db.NotificationRole, { foreignKey: 'notification_id', onDelete: 'CASCADE' });
+// db.Notification.hasMany(db.NotificationRole, { foreignKey: 'notification_id', onDelete: 'CASCADE' });
 db.Notification.hasMany(db.NotificationUser, { foreignKey: 'notification_id', onDelete: 'CASCADE' });
-
-// NotificationRole associations
-db.NotificationRole.belongsTo(db.Notification, { foreignKey: 'notification_id' });
-db.NotificationRole.belongsTo(db.Role, { foreignKey: 'role_id' });
 
 // NotificationUser associations
 db.NotificationUser.belongsTo(db.Notification, { foreignKey: 'notification_id' });
 db.NotificationUser.belongsTo(db.User, { foreignKey: 'user_id' });
+db.NotificationUser.belongsTo(db.Role, { foreignKey: 'role_id' });
 
 // Offer associations
 db.Offer.belongsTo(db.Category, { foreignKey: 'category_id' });

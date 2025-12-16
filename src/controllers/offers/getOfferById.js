@@ -1,13 +1,13 @@
 import db from '../../models/index.js';
 import { RESPONSE } from '../../helper/response.js';
+import { getImageUrl } from '../../helper/urlHelper.js';
 
-// Helper function to append base URL to image
+// Helper function to append base URL to business images
 const appendBaseUrl = (obj) => {
-
     if (obj && obj.Branches && obj.Branches.Business && obj.Branches.Business.business_images) {
         obj.Branches.Business.business_images = obj.Branches.Business.business_images.map(image => ({
             ...image,
-            image_url: `${process.env.APP_PROJECT_PATH}${image.image_url}`
+            image_url: getImageUrl(image.image_url)
         }));
     }
     return obj;

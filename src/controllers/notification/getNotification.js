@@ -9,8 +9,15 @@ const getNotification = async (req, res) => {
         const role = req.user.role;
         const { is_read } = req.query;
 
+        const role_id = await db.Role.findOne({
+            where: {
+                name: role
+            }
+        })
+
         const where_condition = {
-            user_id: userId
+            user_id: userId,
+            role_id: role_id.id
         };
 
         if (is_read !== undefined) {

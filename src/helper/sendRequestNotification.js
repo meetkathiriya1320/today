@@ -18,10 +18,10 @@ const sendRequestNotification = async ({ data, transaction }) => {
             send_by: data.id // user themselves or admin who registered
         }, { transaction });
 
-        await db.NotificationRole.create({
-            notification_id: notification.id,
-            role_id: role_id.id
-        }, { transaction });
+        // await db.NotificationRole.create({
+        //     notification_id: notification.id,
+        //     role_id: role_id.id
+        // }, { transaction });
 
         const findAdmins = await db.User.findAll({
             include: [
@@ -45,14 +45,16 @@ const sendRequestNotification = async ({ data, transaction }) => {
             notification_id: notification.id,
             user_id: adminId,
             is_read: false,
+            role_id: role_id?.id,
             redirect_url: data?.redirect_url || null
         }));
 
         await db.NotificationUser.bulkCreate(notificationUsers, { transaction });
-
+        console.log(notification)
         return { notification_id: notification.id }
 
     } catch (error) {
+        console.log(error, "eeee")
         await transaction.rollback();
     }
 

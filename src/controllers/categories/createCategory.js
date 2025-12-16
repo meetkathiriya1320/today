@@ -1,6 +1,5 @@
 import db from '../../models/index.js';
 import { RESPONSE } from '../../helper/response.js';
-import { appendBaseUrl } from '../images/serveImage.js';
 
 // Create Category
 const createCategory = async (req, res) => {
@@ -18,8 +17,8 @@ const createCategory = async (req, res) => {
             created_by: req.user.userId
         });
 
-        // Use the new utility function to append base URL
-        const categoryWithFullUrl = appendBaseUrl(category.toJSON());
+        // Model getters already handle image URL construction
+        const categoryWithFullUrl = category.toJSON();
 
         return RESPONSE.success(res, 1010, categoryWithFullUrl, 201);
     } catch (error) {

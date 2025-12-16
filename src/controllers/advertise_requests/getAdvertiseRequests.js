@@ -3,18 +3,6 @@ const { Op } = db.Sequelize;
 import { RESPONSE } from '../../helper/response.js';
 import { Sequelize } from 'sequelize';
 
-// Helper function to append base URL to image
-const appendBaseUrl = (obj) => {
-    if (obj.image) {
-        obj.image = `${process.env.APP_PROJECT_PATH}${obj.image}`;
-    }
-
-    // Business images are already handled by the model getter that prepends APP_PROJECT_PATH
-    // No additional processing needed for business images
-
-    return obj;
-};
-
 // Get All Advertise Requests with filtering and pagination
 const getAdvertiseRequests = async (req, res) => {
     try {

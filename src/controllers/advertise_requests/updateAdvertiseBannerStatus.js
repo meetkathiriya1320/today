@@ -107,11 +107,17 @@ const updateAdvertiseBannerStatus = async (req, res) => {
             }
         }
 
+        const businessOwnerRole = await db.Role.findOne({
+            where: { name: 'business_owner' },
+            transaction
+        });
+
         const promotion_data = {
             id: req.user?.userId,
             message: status ? `Your Promotion request from ${formatDate(advertiseRequest.start_date)} to ${formatDate(advertiseRequest.end_date)} has been ${status}` :
                 `Your promotion banner from ${formatDate(advertiseRequest.start_date)} to ${formatDate(advertiseRequest.end_date)} is ${is_active ? "started" : "paused"}.`,
             business_id: advertiseRequest.user_id,
+            role_id: businessOwnerRole?.id,
             redirect_url: status ? "/promotions" : null
         }
 

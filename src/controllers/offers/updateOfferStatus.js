@@ -3,15 +3,6 @@ import { RESPONSE } from '../../helper/response.js';
 import sendNotificationFromAdmin from '../../helper/sendNotificationFromAdmin.js';
 import { getCurrentNotification } from '../notification/createNotification.js';
 
-// Helper function to append base URL to image
-const appendBaseUrl = (obj) => {
-    if (obj && obj.OfferImage) {
-        if (obj.OfferImage.image) {
-            obj.OfferImage.image = `${process.env.APP_PROJECT_PATH}${obj.OfferImage.image}`;
-        }
-    }
-    return obj;
-};
 
 // Update Offer Status (Admin only)
 const updateOfferStatus = async (req, res) => {
@@ -152,14 +143,22 @@ const updateOfferStatus = async (req, res) => {
         if (offerJson.OfferRequestRejectDetails && Array.isArray(offerJson.OfferRequestRejectDetails)) {
             offerJson.OfferRequestRejectDetails = offerJson.OfferRequestRejectDetails[0] || null;
         }
-        const offerWithFullUrl = appendBaseUrl(offerJson);
+        // Model getters already handle image URL construction
+        const offerWithFullUrl = offerJson;
 
         // notification send logic
+
+        const businessOwnerRole = await db.Role.findOne({
+            where: { name: 'business_owner' },
+            transaction
+        });
+
 
         const promotion_data = {
             id: req.user?.userId,
             message: `Your ${offerJson.offer_title} Offer is ${status}`,
             business_id: offerJson.User.id,
+            role_id: businessOwnerRole.id,
             redirect_url: "/offers"
         }
 

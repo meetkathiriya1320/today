@@ -14,6 +14,7 @@ import { controller } from '../controllers/index.js';
 import notificationRoute from './notification/notification.js'
 import offerReportRoute from './offer_report/index.js'
 import { requireAdmin } from '../middleware/adminAuth.js';
+import imageRoutes from "./images/images.js";
 
 
 
@@ -32,5 +33,6 @@ router.use("/report-offers", reportOfferRoute)
 router.get("/dashboard", authenticateToken, controller.dashboard)
 router.use("/notification", notificationRoute)
 router.use("/offer-report", offerReportRoute)
+router.use("/images", imageRoutes)
 
 export default router

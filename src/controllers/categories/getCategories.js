@@ -50,7 +50,9 @@ const getCategories = async (req, res) => {
                         {
                             model: db.Branches,
                             where: {
-                                city: city
+                                 city: {
+                                    [Op.iLike]: city
+                                }
                             },
 
                         }

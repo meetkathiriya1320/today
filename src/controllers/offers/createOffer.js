@@ -3,16 +3,7 @@ import { RESPONSE } from '../../helper/response.js';
 import sendRequestNotification from '../../helper/sendRequestNotification.js';
 import { getCurrentNotification } from '../notification/createNotification.js';
 import sendNotificationFromAdmin from '../../helper/sendNotificationFromAdmin.js';
-
-// Helper function to append base URL to image
-const appendBaseUrl = (obj) => {
-    if (obj && obj.OfferImage) {
-        if (obj.OfferImage.image) {
-            obj.OfferImage.image = `${process.env.APP_PROJECT_PATH}${obj.OfferImage.image}`;
-        }
-    }
-    return obj;
-};
+import { appendBaseUrl } from '../images/serveImage.js';
 
 // Create Offer
 const createOffer = async (req, res) => {
@@ -103,7 +94,7 @@ const createOffer = async (req, res) => {
             ]
         });
 
-        // Apply base URL to images
+        // Apply base URL to images using the new utility function
         const offerWithFullUrl = appendBaseUrl(offerWithImages.toJSON());
 
         return RESPONSE.success(res, 1034, { ...offerWithFullUrl, notifications }, 201);
@@ -206,7 +197,7 @@ const createOffer_admin = async (req, res) => {
             ]
         });
 
-        // Apply base URL to images
+        // Apply base URL to images using the new utility function
         const offerWithFullUrl = appendBaseUrl(offerWithImages.toJSON());
 
         return RESPONSE.success(res, 1034, { ...offerWithFullUrl, notifications }, 201);

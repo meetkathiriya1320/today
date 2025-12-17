@@ -24,7 +24,7 @@ const getAllBusinessOwner = async (req, res) => {
             {
                 model: db.Business,
                 attributes: ['id', 'business_name'],
-                required: false,
+                required: true,
                 include: [
                     { model: db.Branches, as: 'branches', separate: true },
                     { model: db.BusinessImage, as: 'business_images', separate: true }
@@ -109,8 +109,18 @@ const getAllBusinessOwner = async (req, res) => {
 
         const businessMatchUserIds = businessMatches.map(b => b.user_id);
 
+        const emailMatches = await db.User.findAll({
+            where: {
+                email: { [Op.iLike]: `%${search}%` }
+            },
+            attributes: ['id'],
+            raw: true
+        });
+
+        const emailMatchUserIds = emailMatches.map(b => b.id);
+
         // 3) Union unique ids
-        const matchedIdsSet = new Set([...userMatchIds, ...businessMatchUserIds].filter(Boolean));
+        const matchedIdsSet = new Set([...userMatchIds, ...businessMatchUserIds, ...emailMatchUserIds].filter(Boolean));
         const matchedIds = Array.from(matchedIdsSet);
 
         // If no matches, return empty paginated response
